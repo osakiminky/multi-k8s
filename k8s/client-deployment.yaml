@@ -1,0 +1,31 @@
+# Specify API Version For Object = Deployment
+# Specify Kind/Type of Object = Deployment
+# Metadata = Name of Deployment
+# Spec to specify number of Replicas of Pods to manage in Deployment
+# Selector to specify Labels
+# Label is used to specify a Selector (Component) that will be referenced by a Service  
+# Pod Template is used to specify components of the Pod Metadata, Label, Container Name, Image, Port
+# Spec will specify the Name of the Container That the Deployment Will Create for the Pod
+# The Tag/Name of the Docker Image Stored in Docker Hub
+# Expose the Port of The Docker Image Hardcoded in the Dockerfile of Default Port of the Image
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:   
+  name: client-deployment
+spec:
+  replicas: 3
+  selector: 
+    matchLabels:
+      component: web
+  template:
+    metadata:
+      labels:
+        component: web
+    spec: 
+      containers: 
+        - name: client 
+          image: osakiminky/multi-client
+          ports: 
+            - containerPort: 3000
+

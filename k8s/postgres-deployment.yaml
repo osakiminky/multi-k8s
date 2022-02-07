@@ -1,0 +1,51 @@
+# Specify API Version For Deployment Object = apps/v1
+# Specify Kind/Type of Object = Deployment
+# Metadata = Name of Deployment
+# Spec to specify number of Replicas of Pods to manage in Deployment
+# Selector to specify Labels
+# Label is used to specify a Selector (Component) that will be referenced by a Service  
+# Pod Template is used to specify components of the Pod Metadata, Label, Container Name, Image, Port
+# Spec will specify the Volume for the Postgres DB Storage Persistent Storage Claim
+# Spec will specify the Name of the Container That the Deployment Will Create for the Pod
+# The Tag/Name of the Docker Image Stored in Docker Hub
+# Expose the Port of The Docker Image Hardcoded in the Dockerfile of Default Port of the Image
+# Mount the Volume to the Postgres Container specifying the Mount Path and Sub Path
+# Create Secrets Object to store Postgres DB Password and provide in config as Environment Variables
+# Environment variables specifying where to get the secretkeyref value from 
+# The name of Secret and key of secret used by the Deployment Config to retrieve the value of the secret 
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      component: postgres
+  template:
+    metadata:
+      labels:
+        component: postgres
+    spec:
+      volumes:
+        - name: postgres-storage
+          persistentVolumeClaim:
+            claimName: database-persistent-volume-claim
+      containers:
+        - name: postgres
+          image: postgres
+          ports:
+            - containerPort: 5432
+          volumeMounts:
+            - name: postgres-storage
+              mountPath: /var/lib/postgresql/data
+              subPath: postgres
+          env:
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: pgpassword
+                  key: PGPASSWORD
+
+  

@@ -1,0 +1,35 @@
+# Specify API Version For Deployment Object = apps/v1
+# Specify Kind/Type of Object = Deployment
+# Metadata = Name of Deployment
+# Spec to specify number of Replicas of Pods to manage in Deployment
+# Selector to specify Labels
+# Label is used to specify a Selector (Component) that will be referenced by a Service  
+# Pod Template is used to specify components of the Pod Metadata, Label, Container Name, Image, Port
+# Spec will specify the Name of the Container That the Deployment Will Create for the Pod
+# The Tag/Name of the Docker Image Stored in Docker Hub
+# Environment Variables for the Redis Host/Port 
+# The Worker Server does not need to be exposed to a port as it does work processes and sends them only to the Redis Servers
+
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: worker-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      component: worker
+  template:
+    metadata:
+      labels:
+        component: worker
+    spec:
+      containers:
+        - name: worker
+          image: osakiminky/multi-worker
+          env:
+            - name: REDIS_HOST
+              value: redis-cluster-ip-service
+            - name: REDIS_PORT
+              value: '6379'

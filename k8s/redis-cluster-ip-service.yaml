@@ -1,0 +1,20 @@
+# Specify API Version For Service Object = v1
+# Specify Kind/Type of Object = Service
+# Metadata = Name of Service
+# Spec will specify the Type of Service it Will Create = ClusterIP
+# Selector is used to identify the Label created by the Deployment for the Pod
+# Ports will specify the Port exposed in Client Deployment for specific Image
+# Target Ports will match the Port exposed in Client Deployment for specific Image
+# Port or Target Port is usually the default port for the Redis Image 
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis-cluster-ip-service
+spec:
+  type: ClusterIP
+  selector:
+    component: redis
+  ports:
+    - port: 6379
+      targetPort: 6379

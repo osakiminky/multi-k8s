@@ -1,0 +1,49 @@
+# Specify API Version For Deployment Object = apps/v1
+# Specify Kind/Type of Object = Deployment
+# Metadata = Name of Deployment
+# Spec to specify number of Replicas of Pods to manage in Deployment
+# Selector to specify Labels
+# Label is used to specify a Selector (Component) that will be referenced by a Service  
+# Pod Template is used to specify components of the Pod Metadata, Label, Container Name, Image, Port
+# Spec will specify the Name of the Container That the Deployment Will Create for the Pod
+# The Tag/Name of the Docker Image Stored in Docker Hub
+# Expose the Port of The Docker Image Hardcoded in the Dockerfile of Default Port of the Image
+# Environment Variables for the Redis Host/Port and Postgres DB Host/Port/User/Database&Password(Encoded Secret) 
+
+apiVersion: apps/v1
+kind: Deployment
+metadata: 
+  name: server-deployment
+spec:
+  replicas: 3
+  selector: 
+    matchLabels:
+      component: server
+  template:
+    metadata:
+      labels:
+        component: server
+    spec:
+      containers:
+        - name: server
+          image: osakiminky/multi-server
+          ports:
+            - containerPort: 5000
+          env:
+            - name: REDIS_HOST
+              value: redis-cluster-ip-service
+            - name: REDIS_PORT
+              value: '6379'
+            - name: PGUSER
+              value: postgres
+            - name: PGHOST
+              value: postgres-cluster-ip-service
+            - name: PGPORT
+              value: '5432'
+            - name: PGDATABASE
+              value: postgres
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: pgpassword
+                  key: PGPASSWORD
